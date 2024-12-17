@@ -4,8 +4,8 @@ dotenv.config();
 
 const config = {
   // Server configuration
-  port: process.env.PORT || 3000,
-  nodeEnv: process.env.NODE_ENV || "development",
+  serverPort: process.env.SERVER_PORT || 5000,
+  clientPort: process.env.CLIENT_PORT || 3000,
 
   // MongoDB configuration
   mongoUri: process.env.MONGO_URI || "mongodb://localhost:27017/my-db",
@@ -16,7 +16,7 @@ const config = {
 
   // JWT configuration
   jwtSecret: process.env.JWT_SECRET || "your-secret-key",
-  jwtExpiresIn: process.env.JWT_EXPIRES_IN || "24h",
+  jwtExpiresIn: "24h",
 
   // Logging configuration
   logPath: "src/logs/logs",
