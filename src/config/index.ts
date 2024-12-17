@@ -8,8 +8,7 @@ const config = {
   nodeEnv: process.env.NODE_ENV || "development",
 
   // MongoDB configuration
-  mongoUri:
-    process.env.MONGO_URI || "mongodb://localhost:27017/my-db",
+  mongoUri: process.env.MONGO_URI || "mongodb://localhost:27017/my-db",
   mongoOptions: {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -20,20 +19,15 @@ const config = {
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "24h",
 
   // Logging configuration
-  logPath: process.env.LOG_PATH || "src/logs/logs",
-  logLevel: process.env.LOG_LEVEL || "info",
-
-  // CORS configuration
-  corsOrigin: process.env.CORS_ORIGIN || "*",
-
-  // Rate limiting
-  rateLimit: {
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
-  },
+  logPath: "src/logs/logs",
+  logLevel: "info",
 
   // API versioning
   apiVersion: process.env.API_VERSION || "v1",
+
+  // admin crediential
+  adminEmail: process.env.ADMIN_EMAIL,
+  adminPwd: process.env.ADMIN_PWD,
 };
 
 export default config;

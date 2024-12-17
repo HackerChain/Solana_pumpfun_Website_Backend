@@ -27,27 +27,52 @@ router.post("/register", async (req, res) => {
   }
 });
 
+// router.post("/login", async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+//     const user = await User.findOne({ email });
+
+//     if (!user) {
+//       logger.warn(`Login attempt failed for email: ${email}`);
+//       return res.status(401).json({ message: "Invalid credentials" });
+//     }
+
+//     const validPassword = await bcrypt.compare(password, user.password);
+//     if (!validPassword) {
+//       logger.warn(`Invalid password for user: ${email}`);
+//       return res.status(401).json({ message: "Invalid credentials" });
+//     }
+
+//     const token = jwt.sign({ userId: user._id }, config.jwtSecret, {
+//       expiresIn: "24h",
+//     });
+//     logger.info(`User logged in: ${email}`);
+//     res.json({ token });
+//   } catch (error: any) {
+//     logger.error(`Login error: ${error.message}`);
+//     res.status(500).json({ message: "Login failed" });
+//   }
+// });
+
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    console.log(req.body);
 
-    if (!user) {
+    const adminEmail = config.adminEmail;
+    if (adminEmail !== email) {
       logger.warn(`Login attempt failed for email: ${email}`);
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const validPassword = await bcrypt.compare(password, user.password);
+    const validPassword = password === config.adminPwd;
     if (!validPassword) {
       logger.warn(`Invalid password for user: ${email}`);
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ userId: user._id }, config.jwtSecret, {
-      expiresIn: "24h",
-    });
     logger.info(`User logged in: ${email}`);
-    res.json({ token });
+    res.status(200).json({ message: "Login successful" });
   } catch (error: any) {
     logger.error(`Login error: ${error.message}`);
     res.status(500).json({ message: "Login failed" });
