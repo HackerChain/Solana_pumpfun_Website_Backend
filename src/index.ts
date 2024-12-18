@@ -22,22 +22,21 @@ server.use((req, res, next) => {
 });
 
 /********* C L I E N T *************/
-const client = express();
-const path = require("path");
+// const client = express();
+// const path = require("path");
 
-// Serve static files from frontend dist
-client.use(express.static(path.join(__dirname, "../../frontend/dist")));
+// // Serve static files from frontend dist
+// client.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
-const client_http = require("http").Server(client);
-client_http.listen(config.clientPort, () => {
-  console.log(`🚀 Client is running or port ${config.clientPort}`);
-});
+// const client_http = require("http").Server(client);
+// client_http.listen(config.clientPort, () => {
+//   console.log(`🚀 Client is running or port ${config.clientPort}`);
+// });
 
-// Handle all routes by serving index.html
-client.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"));
-});
-
+// // Handle all routes by serving index.html
+// client.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"));
+// });
 
 /********* db **************/
 // mongoose
