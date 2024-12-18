@@ -14,7 +14,6 @@ export const validateJWT = (
 ) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
-
     if (!token) {
       logger.warn("No JWT token provided");
       return res.status(401).json({ message: "Authentication required" });

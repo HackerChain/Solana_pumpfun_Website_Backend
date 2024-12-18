@@ -13,8 +13,8 @@ server.use(express.json());
 
 server.use((req, res, next) => {
   if (
-    req.path === `/${config.apiVersion}/api/auth/login` ||
-    req.path === `/${config.apiVersion}/api/auth/register`
+    req.path === `/api/${config.apiVersion}/auth/login` ||
+    req.path === `/api/${config.apiVersion}/auth/register`
   ) {
     return next();
   }
@@ -49,7 +49,7 @@ server.use((req, res, next) => {
 //     process.exit(1);
 //   });
 
-server.use(`/${config.apiVersion}/api`, routes);
+server.use(`/api/${config.apiVersion}`, routes);
 
 server.listen(config.serverPort, () => {
   logger.info(`🚀 Server is running on port ${config.serverPort}`);
