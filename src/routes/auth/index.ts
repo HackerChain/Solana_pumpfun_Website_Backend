@@ -59,17 +59,17 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
     console.log(req.body);
 
-    const adminEmail = config.adminEmail;
-    if (adminEmail !== email) {
-      logger.warn(`Login attempt failed for email: ${email}`);
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+    // const adminEmail = config.adminEmail;
+    // if (adminEmail !== email) {
+    //   logger.warn(`Login attempt failed for email: ${email}`);
+    //   return res.status(401).json({ message: "Invalid credentials" });
+    // }
 
-    const validPassword = password === config.adminPwd;
-    if (!validPassword) {
-      logger.warn(`Invalid password for user: ${email}`);
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+    // const validPassword = password === config.adminPwd;
+    // if (!validPassword) {
+    //   logger.warn(`Invalid password for user: ${email}`);
+    //   return res.status(401).json({ message: "Invalid credentials" });
+    // }
 
     // Generate JWT token
     const token = jwt.sign(
