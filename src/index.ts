@@ -14,7 +14,8 @@ server.use(express.json());
 server.use((req, res, next) => {
   if (
     req.path === `/api/${config.apiVersion}/auth/login` ||
-    req.path === `/api/${config.apiVersion}/auth/register`
+    req.path === `/api/${config.apiVersion}/auth/register` ||
+    req.path === `/api/${config.apiVersion}/auth/logout`
   ) {
     return next();
   }

@@ -89,4 +89,17 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Add this route after your login route
+router.post("/logout", async (req, res) => {
+  try {
+    // Since JWT is stateless, we'll handle this on the client side
+    // by removing the token, but we'll log the event server-side
+    logger.info("User logged out successfully");
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (error: any) {
+    logger.error(`Logout error: ${error.message}`);
+    res.status(500).json({ message: "Logout failed" });
+  }
+});
+
 export default router;
