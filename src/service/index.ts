@@ -1,15 +1,31 @@
 import { fetch_all_data_from_pumpfun } from "./CoindataService";
 
-export const getDatafromPumpfun = async () => {
-  const data = await fetch_all_data_from_pumpfun();
-  return data;
+let now_data: { [key: string]: any[] } = {};
+let updating_data: { [key: string]: any[] } = {};
+let isUpdating = false;
+
+// Update data periodically
+const UPDATE_INTERVAL = 10 * 1000; // 10 seconds
+
+export const startDataUpdate = () => {
+  setInterval(async () => {
+    if (!isUpdating) {
+      // console.log("Updating data...");
+      isUpdating = true;
+      updating_data = await fetch_all_data_from_pumpfun();
+
+      now_data = updating_data;
+      isUpdating = false;
+    }
+  }, UPDATE_INTERVAL);
 };
 
-// Execute the async function
-// export const da = async () => {
-//   const data = await getDatafromPumpfun();
-//   return data;
-//   // console.log(data["15m"]);
-//   // console.log(data["3h"]);
-//   // console.log(data["6h"]);
-// };
+export const getDatafromPumpfun = async () => {
+  // If this is first request, initialize data
+  if (Object.keys(now_data).length === 0) {
+    now_data = await fetch_all_data_from_pumpfun();
+  }
+  return now_data;
+};
+
+// Start the update cycle when service initializes

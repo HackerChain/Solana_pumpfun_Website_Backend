@@ -5,6 +5,7 @@ import { validateJWT } from "./middleware/auth";
 import routes from "./routes";
 import logger from "./logs/logger";
 import config from "./config";
+import { startDataUpdate } from "./service";
 
 const server: Express = express();
 
@@ -52,6 +53,7 @@ server.use((req, res, next) => {
 //   });
 
 server.use(`/api/${config.apiVersion}`, routes);
+startDataUpdate();
 
 server.get("/api/v1/test", (req, res) => {
   res.send("Hello, World!");
