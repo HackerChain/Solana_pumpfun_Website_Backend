@@ -57,3 +57,5 @@ temp/
 
 # Yarn Integrity file
 .yarn-integrity
+
+/data_sample

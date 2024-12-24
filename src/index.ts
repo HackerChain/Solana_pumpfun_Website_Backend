@@ -15,7 +15,8 @@ server.use((req, res, next) => {
   if (
     req.path === `/api/${config.apiVersion}/auth/login` ||
     req.path === `/api/${config.apiVersion}/auth/register` ||
-    req.path === `/api/${config.apiVersion}/auth/logout`
+    req.path === `/api/${config.apiVersion}/auth/logout` ||
+    req.path === `/api/${config.apiVersion}/test`
   ) {
     return next();
   }
@@ -51,6 +52,10 @@ server.use((req, res, next) => {
 //   });
 
 server.use(`/api/${config.apiVersion}`, routes);
+
+server.get("/api/v1/test", (req, res) => {
+  res.send("Hello, World!");
+});
 
 server.listen(config.serverPort, () => {
   logger.info(`🚀 Server is running on port ${config.serverPort}`);
