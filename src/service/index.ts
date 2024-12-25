@@ -14,7 +14,7 @@ export const startDataUpdate = () => {
       // console.log("Updating data...");
       isUpdating = true;
       updating_data = await fetch_all_data_from_pumpfun();
-      
+
       now_data = updating_data;
       isUpdating = false;
     }

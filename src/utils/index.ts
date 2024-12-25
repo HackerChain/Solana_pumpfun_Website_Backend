@@ -1,4 +1,4 @@
-import { Connection, PublicKey } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import config from "../config";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -6,7 +6,6 @@ import {
   getMint,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
-import { Metaplex } from "@metaplex-foundation/js";
 import logger from "../logs/logger";
 
 export const getCirculatingSupplyFromMint = async (mint: string) => {
