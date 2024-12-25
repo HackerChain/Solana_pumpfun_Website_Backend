@@ -31,12 +31,15 @@ const config = {
   adminEmail: process.env.ADMIN_EMAIL,
   adminPwd: process.env.ADMIN_PWD,
 
-  update_cycle: 20 * 1000,
+  update_cycle: 5 * 60 * 1000,
   connection: new Connection(
     process.env.SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com"
   ),
   metaplex: new Metaplex(
-    new Connection(process.env.SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com")
-  )
+    new Connection(
+      process.env.SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com"
+    )
+  ),
+  x_api_key: process.env.X_API_KEY || "",
 };
 export default config;

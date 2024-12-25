@@ -26,17 +26,17 @@ class Logger {
   }
 
   info(message: string): void {
-    console.log(message);
+    console.info(message);
     this.writeLog(LogLevel.INFO, message);
   }
 
   error(message: string): void {
-    console.log(message);
+    console.error(message);
     this.writeLog(LogLevel.ERROR, message);
   }
 
   warn(message: string): void {
-    console.log(message);
+    console.warn(message);
     this.writeLog(LogLevel.WARN, message);
   }
 

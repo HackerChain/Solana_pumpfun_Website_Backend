@@ -7,6 +7,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { Metaplex } from "@metaplex-foundation/js";
+import logger from "../logs/logger";
 
 export const getCirculatingSupplyFromMint = async (mint: string) => {
   const url = `https://api.solana.fm/v1/tokens/${mint}/supply`;
@@ -93,9 +94,37 @@ async function getTop10Percent(mint: string): Promise<any> {
 }
 
 const getMetadataFromMint = async (ca: string) => {
-  const mintAddress = new PublicKey(ca);
-  const metadata = await config.metaplex.nfts().findByMint({ mintAddress });
-  return metadata;
+  try {
+    const mintAddress = new PublicKey(ca);
+    const metadata = await config.metaplex.nfts().findByMint({ mintAddress });
+    return metadata;
+  } catch (error: any) {
+    logger.error("Error fetching metadata: " + error);
+  }
+};
+
+const extractTwitterUsername = (twitterUrl: string): string => {
+  const urlParts = twitterUrl.split("/");
+  return urlParts[3] || "";
+};
+
+const getXScore = async (acc: string) => {
+  if (!acc.trim()) return 0;
+  const userName = extractTwitterUsername(acc);
+  const headers = {
+    Accept: "application/json",
+    ApiKey: config.x_api_key,
+  };
+  const response = await fetch(
+    `https://api.tweetscout.io/v2/score/${userName}`,
+    {
+      method: "GET",
+      headers: headers,
+    }
+  );
+  const data = await response.json();
+  if (data.score) return data.score;
+  else return 0;
 };
 
 export const updateDataProcess = async (data: any[]) => {
@@ -103,18 +132,20 @@ export const updateDataProcess = async (data: any[]) => {
     getDevState(new PublicKey(item.mint), new PublicKey(item.creator)),
     getTop10Percent(item.mint),
     getMetadataFromMint(item.mint),
+    getXScore(item.twitter || ""),
   ]);
-
+  // console.log("🚀 ~ updateDataProcess ~ allPromises");
   const results = await Promise.all(allPromises);
+  // console.log("🚀 ~ result");
 
   return data.map((item, index) => {
-    const i = index * 3;
+    const i = index * 4;
     const devState = results[i];
     const top10 = results[i + 1];
     const metadata = results[i + 2];
-
+    const xscore = results[i + 3];
     const decimal = metadata?.mint.decimals;
-    const supply = metadata?.mint.supply.basisPoints / 10 ** decimal;
+    const supply = metadata?.mint.supply.basisPoints / 10 ** (decimal || 9);
     const price = item.usd_market_cap / supply;
 
     return {
@@ -136,6 +167,19 @@ export const updateDataProcess = async (data: any[]) => {
       mint_auth: metadata?.mint.mintAuthorityAddress === null ? true : false,
       freeze_auth:
         metadata?.mint.freezeAuthorityAddress === null ? true : false,
+      x_score: xscore,
     };
   });
+};
+
+export const formatTimestamp = (timestamp: number) => {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds());
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };

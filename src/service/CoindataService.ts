@@ -1,4 +1,5 @@
 import { HEADER } from "../config/config";
+import logger from "../logs/logger";
 import { updateDataProcess } from "../utils";
 
 const baseURL = "https://frontend-api.pump.fun/coins/featured/";
@@ -28,6 +29,7 @@ const fetch_from_pumpfun = async ({
     return data;
   } catch (error: any) {
     console.error("Error fetching from pump.fun:", error.message);
+    logger.critical("Error fetching from pump.fun: " + error);
     return null;
   }
 };
