@@ -15,8 +15,9 @@ router.get("/:time", async (req, res) => {
     const timeData = tmpData[time] || [];
     const paginatedData = timeData.slice(offset, offset + limit);
 
+
     logger.info(
-      `Returning ${paginatedData.length} records for time window: ${time}`
+      `Returning ${paginatedData?.length} records for time window: ${time}`
     );
 
     res.json({

@@ -1,4 +1,5 @@
 import { HEADER } from "../config/config";
+import { updateDataProcess } from "../utils";
 
 const baseURL = "https://frontend-api.pump.fun/coins/featured/";
 
@@ -23,6 +24,7 @@ const fetch_from_pumpfun = async ({
     }
 
     const data = await response.json();
+
     return data;
   } catch (error: any) {
     console.error("Error fetching from pump.fun:", error.message);
@@ -32,7 +34,7 @@ const fetch_from_pumpfun = async ({
 
 const TimeArray = ["15m", "3h", "6h"];
 
-const LIMIT = 100;
+const LIMIT = 50;
 const SIZE = 200;
 
 export const fetch_all_data_from_pumpfun = async () => {
@@ -43,15 +45,16 @@ export const fetch_all_data_from_pumpfun = async () => {
   };
 
   for (const time of TimeArray) {
-    for (let i = 0; i < SIZE; i += LIMIT) {
+    for (let i = 0; i <= SIZE; i += LIMIT) {
       const result = await fetch_from_pumpfun({
         timeWindow: time,
         limit: LIMIT,
         offset: i,
       });
+      const result_data = await updateDataProcess(result);
       // console.log("result:", result);
-      if (result) {
-        data[time].push(...result);
+      if (result_data) {
+        data[time].push(...result_data);
       }
     }
   }

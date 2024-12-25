@@ -1,3 +1,5 @@
+import { Metaplex } from "@metaplex-foundation/js";
+import { Connection } from "@solana/web3.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -28,6 +30,13 @@ const config = {
   // admin crediential
   adminEmail: process.env.ADMIN_EMAIL,
   adminPwd: process.env.ADMIN_PWD,
-};
 
+  update_cycle: 20 * 1000,
+  connection: new Connection(
+    process.env.SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com"
+  ),
+  metaplex: new Metaplex(
+    new Connection(process.env.SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com")
+  )
+};
 export default config;
