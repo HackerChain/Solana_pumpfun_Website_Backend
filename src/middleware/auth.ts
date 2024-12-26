@@ -13,17 +13,16 @@ export const validateJWT = (
   next: NextFunction
 ) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
+    // const token = req.headers.authorization?.split(" ")[1];
+    // if (!token) {
+    //   logger.warn("No JWT token provided");
+    //   return res.status(401).json({ message: "Authentication required" });
+    // }
 
-    if (!token) {
-      logger.warn("No JWT token provided");
-      return res.status(401).json({ message: "Authentication required" });
-    }
+    // const decoded = jwt.verify(token, config.jwtSecret);
+    // req.user = decoded;
 
-    const decoded = jwt.verify(token, config.jwtSecret);
-    req.user = decoded;
-
-    logger.info(`JWT validated for user: ${JSON.stringify(decoded)}`);
+    // logger.info(`JWT validated for user: ${JSON.stringify(decoded)}`);
     next();
   } catch (error: any) {
     logger.error(`JWT validation failed: ${error.message}`);

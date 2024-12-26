@@ -27,30 +27,78 @@ router.post("/register", async (req, res) => {
   }
 });
 
+// router.post("/login", async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+//     const user = await User.findOne({ email });
+
+//     if (!user) {
+//       logger.warn(`Login attempt failed for email: ${email}`);
+//       return res.status(401).json({ message: "Invalid credentials" });
+//     }
+
+//     const validPassword = await bcrypt.compare(password, user.password);
+//     if (!validPassword) {
+//       logger.warn(`Invalid password for user: ${email}`);
+//       return res.status(401).json({ message: "Invalid credentials" });
+//     }
+
+//     const token = jwt.sign({ userId: user._id }, config.jwtSecret, {
+//       expiresIn: "24h",
+//     });
+//     logger.info(`User logged in: ${email}`);
+//     res.json({ token });
+//   } catch (error: any) {
+//     logger.error(`Login error: ${error.message}`);
+//     res.status(500).json({ message: "Login failed" });
+//   }
+// });
+
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    console.log(req.body);
 
-    if (!user) {
-      logger.warn(`Login attempt failed for email: ${email}`);
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+    // const adminEmail = config.adminEmail;
+    // if (adminEmail !== email) {
+    //   logger.warn(`Login attempt failed for email: ${email}`);
+    //   return res.status(401).json({ message: "Invalid credentials" });
+    // }
 
-    const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword) {
-      logger.warn(`Invalid password for user: ${email}`);
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+    // const validPassword = password === config.adminPwd;
+    // if (!validPassword) {
+    //   logger.warn(`Invalid password for user: ${email}`);
+    //   return res.status(401).json({ message: "Invalid credentials" });
+    // }
 
-    const token = jwt.sign({ userId: user._id }, config.jwtSecret, {
-      expiresIn: "24h",
-    });
+    // Generate JWT token
+    const token = jwt.sign(
+      { email: email },
+      config.jwtSecret, // Add JWT_SECRET to your config
+      { expiresIn: "24h" }
+    );
+
     logger.info(`User logged in: ${email}`);
-    res.json({ token });
+    res.status(200).json({
+      message: "Login successful",
+      token: token,
+    });
   } catch (error: any) {
     logger.error(`Login error: ${error.message}`);
     res.status(500).json({ message: "Login failed" });
+  }
+});
+
+// Add this route after your login route
+router.post("/logout", async (req, res) => {
+  try {
+    // Since JWT is stateless, we'll handle this on the client side
+    // by removing the token, but we'll log the event server-side
+    logger.info("User logged out successfully");
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (error: any) {
+    logger.error(`Logout error: ${error.message}`);
+    res.status(500).json({ message: "Logout failed" });
   }
 });
 
