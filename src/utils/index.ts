@@ -8,6 +8,7 @@ import {
 } from "@solana/spl-token";
 import logger from "../logs/logger";
 import XScore from "../models/XScore";
+import { HEADER } from "../config/config";
 
 export const getCirculatingSupplyFromMint = async (mint: string) => {
   const url = `https://api.solana.fm/v1/tokens/${mint}/supply`;
@@ -125,22 +126,12 @@ export const getXScore = async (acc: any) => {
         config.xScore_Update_cycle;
 
     if (!shouldFetchNew) {
-      console.log("Using cached score for " + acc.mint);
       return existingScore.xScore;
     }
-
-    // Fetch new score from API
-    const headers = {
-      Accept: "application/json",
-      ApiKey: config.x_api_key,
-    };
+    
     const userName = extractTwitterUsername(acc.twitter);
     const response = await fetch(
-      `https://api.tweetscout.io/v2/score/${userName}`,
-      {
-        method: "GET",
-        headers: headers,
-      }
+      `https://api.tweetscout.io/v2/score/${userName}`,HEADER
     );
 
     const data = await response.json();
@@ -156,7 +147,6 @@ export const getXScore = async (acc: any) => {
       },
       { upsert: true, new: true }
     );
-    console.log(`Fetched new score for ${acc.mint}: ${score}`);
     return score;
   } catch (error) {
     logger.error(`Error in getXScore for mint ${acc.mint}: ${error}`);
@@ -169,7 +159,7 @@ export const updateDataProcess = async (data: any[]) => {
     getDevState(new PublicKey(item.mint), new PublicKey(item.creator)),
     getTop10Percent(item.mint),
     getMetadataFromMint(item.mint),
-    getXScore(item.twitter || ""),
+    getXScore(item),
   ]);
   // console.log("🚀 ~ updateDataProcess ~ allPromises");
   const results = await Promise.all(allPromises);
