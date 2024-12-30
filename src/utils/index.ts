@@ -128,21 +128,31 @@ export const getXScore = async (acc: any) => {
     if (!shouldFetchNew) {
       return existingScore.xScore;
     }
-    
+
     const userName = extractTwitterUsername(acc.twitter);
+    const headers = {
+      Accept: "application/json",
+      ApiKey: config.x_api_key,
+    };
     const response = await fetch(
-      `https://api.tweetscout.io/v2/score/${userName}`,HEADER
+      `https://api.tweetscout.io/v2/score/${userName}`,
+      {
+        method: "GET",
+        headers: headers,
+      }
     );
 
     const data = await response.json();
-    const score = data.score || 0;
-
+    let score = 0;
+    if (data.score) score = data.score;
+    else score = 0;
     // Save or update score in DB
     await XScore.findOneAndUpdate(
       { mint: acc.mint },
       {
         mint: acc.mint,
         xScore: score,
+        userName: userName,
         timestamp: new Date(),
       },
       { upsert: true, new: true }
