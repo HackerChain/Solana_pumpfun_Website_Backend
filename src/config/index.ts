@@ -32,6 +32,7 @@ const config = {
   adminPwd: process.env.ADMIN_PWD,
 
   update_cycle: 5 * 60 * 1000,
+  xScore_Update_cycle: 30 * 24 * 60 * 60 * 1000,
   connection: new Connection(
     process.env.SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com"
   ),
