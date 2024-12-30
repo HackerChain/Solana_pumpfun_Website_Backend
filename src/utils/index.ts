@@ -7,6 +7,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import logger from "../logs/logger";
+import XScore from "../models/XScore";
 
 export const getCirculatingSupplyFromMint = async (mint: string) => {
   const url = `https://api.solana.fm/v1/tokens/${mint}/supply`;
@@ -107,31 +108,60 @@ const extractTwitterUsername = (twitterUrl: string): string => {
   return urlParts[3] || "";
 };
 
-const getXScore = async (acc: string) => {
-  // TODO: remove this
-  const value = 0;
-  return value;
-  // if (!acc.trim()) return 0;
-  // const userName = extractTwitterUsername(acc);
-  // const headers = {
-  //   Accept: "application/json",
-  //   ApiKey: config.x_api_key,
-  // };
-  // try {
-  //   const response = await fetch(
-  //     `https://api.tweetscout.io/v2/score/${userName}`,
-  //     {
-  //       method: "GET",
-  //       headers: headers,
-  //     }
-  //   );
-  //   const data = await response.json();
-  //   if (data.score) return data.score;
-  //   else return 0;
-  // } catch (error) {
-  //   console.error("Error fetching X score:", error);
-  //   return 0;
-  // }
+export const getXScore = async (acc: any) => {
+  try {
+    // If no twitter handle, return 0
+    if (!acc.twitter) {
+      return 0;
+    }
+
+    // Check if score exists in DB
+    const existingScore = await XScore.findOne({ mint: acc.mint });
+
+    // Check if we need to fetch new score (if doesn't exist or older than 30 days)
+    const shouldFetchNew =
+      !existingScore ||
+      Date.now() - existingScore.timestamp.getTime() >
+        config.xScore_Update_cycle;
+
+    if (!shouldFetchNew) {
+      console.log("Using cached score for " + acc.mint);
+      return existingScore.xScore;
+    }
+
+    // Fetch new score from API
+    const headers = {
+      Accept: "application/json",
+      ApiKey: config.x_api_key,
+    };
+    const userName = extractTwitterUsername(acc.twitter);
+    const response = await fetch(
+      `https://api.tweetscout.io/v2/score/${userName}`,
+      {
+        method: "GET",
+        headers: headers,
+      }
+    );
+
+    const data = await response.json();
+    const score = data.score || 0;
+
+    // Save or update score in DB
+    await XScore.findOneAndUpdate(
+      { mint: acc.mint },
+      {
+        mint: acc.mint,
+        xScore: score,
+        timestamp: new Date(),
+      },
+      { upsert: true, new: true }
+    );
+    console.log(`Fetched new score for ${acc.mint}: ${score}`);
+    return score;
+  } catch (error) {
+    logger.error(`Error in getXScore for mint ${acc.mint}: ${error}`);
+    return 0;
+  }
 };
 
 export const updateDataProcess = async (data: any[]) => {
