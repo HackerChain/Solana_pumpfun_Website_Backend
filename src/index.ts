@@ -42,15 +42,15 @@ server.use((req, res, next) => {
 // });
 
 /********* db **************/
-// mongoose
-//   .connect(config.mongoUri)
-//   .then(() => {
-//     logger.info("🚀 Connected to MongoDB successfully");
-//   })
-//   .catch((error) => {
-//     logger.critical(`MongoDB connection error: ${error.message}`);
-//     process.exit(1);
-//   });
+mongoose
+  .connect(config.mongoUri)
+  .then(() => {
+    logger.info("🚀 Connected to MongoDB successfully");
+  })
+  .catch((error) => {
+    logger.critical(`MongoDB connection error: ${error.message}`);
+    process.exit(1);
+  });
 
 server.use(`/api/${config.apiVersion}`, routes);
 startDataUpdate();

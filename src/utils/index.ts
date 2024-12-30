@@ -108,27 +108,30 @@ const extractTwitterUsername = (twitterUrl: string): string => {
 };
 
 const getXScore = async (acc: string) => {
-  if (!acc.trim()) return 0;
-  const userName = extractTwitterUsername(acc);
-  const headers = {
-    Accept: "application/json",
-    ApiKey: config.x_api_key,
-  };
-  try {
-    const response = await fetch(
-      `https://api.tweetscout.io/v2/score/${userName}`,
-      {
-        method: "GET",
-        headers: headers,
-      }
-    );
-    const data = await response.json();
-    if (data.score) return data.score;
-    else return 0;
-  } catch (error) {
-    console.error("Error fetching X score:", error);
-    return 0;
-  }
+  // TODO: remove this
+  const value = 0;
+  return value;
+  // if (!acc.trim()) return 0;
+  // const userName = extractTwitterUsername(acc);
+  // const headers = {
+  //   Accept: "application/json",
+  //   ApiKey: config.x_api_key,
+  // };
+  // try {
+  //   const response = await fetch(
+  //     `https://api.tweetscout.io/v2/score/${userName}`,
+  //     {
+  //       method: "GET",
+  //       headers: headers,
+  //     }
+  //   );
+  //   const data = await response.json();
+  //   if (data.score) return data.score;
+  //   else return 0;
+  // } catch (error) {
+  //   console.error("Error fetching X score:", error);
+  //   return 0;
+  // }
 };
 
 export const updateDataProcess = async (data: any[]) => {
