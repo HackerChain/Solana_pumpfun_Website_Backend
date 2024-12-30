@@ -9,6 +9,7 @@ export interface IXScore extends Document {
 const XScoreSchema: Schema = new Schema({
   mint: { type: String, required: true, unique: true },
   xScore: { type: Number, required: true },
+  userName: {type:String, required:true},
   timestamp: { type: Date, default: Date.now },
 });
 
