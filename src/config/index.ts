@@ -31,8 +31,8 @@ const config = {
   adminEmail: process.env.ADMIN_EMAIL,
   adminPwd: process.env.ADMIN_PWD,
 
-  update_cycle: 5 * 60 * 1000,
-  xScore_Update_cycle: 30 * 24 * 60 * 60 * 1000,
+  update_cycle: 24 * 60 * 60 * 1000, // 5 minutes in milliseconds to update all data
+  xScore_Update_cycle: 30 * 24 * 60 * 60 * 1000, // 1 months in milliseconds
   connection: new Connection(
     process.env.SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com"
   ),

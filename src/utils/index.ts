@@ -8,7 +8,6 @@ import {
 } from "@solana/spl-token";
 import logger from "../logs/logger";
 import XScore from "../models/XScore";
-import { HEADER } from "../config/config";
 
 export const getCirculatingSupplyFromMint = async (mint: string) => {
   const url = `https://api.solana.fm/v1/tokens/${mint}/supply`;
@@ -18,7 +17,7 @@ export const getCirculatingSupplyFromMint = async (mint: string) => {
     const data = await response.json();
     return data.circulatingSupply;
   } catch (err) {
-    console.log(err);
+    logger.error(`Error fetching circulating supply: ${err}`);
     return null;
   }
 };
@@ -105,8 +104,21 @@ const getMetadataFromMint = async (ca: string) => {
 };
 
 const extractTwitterUsername = (twitterUrl: string): string => {
-  const urlParts = twitterUrl.split("/");
-  return urlParts[3] || "";
+  // Handle direct username without URL
+  if (!twitterUrl.includes("/")) {
+    return twitterUrl;
+  }
+
+  // Remove https:// or http:// if present
+  const cleanUrl = twitterUrl.replace(/^(https?:\/\/)?(www\.)?/, "");
+
+  // Split and get username part
+  const urlParts = cleanUrl.split("/");
+
+  // Return username, filtering out 'twitter.com'
+  return (
+    urlParts.find((part) => part !== "twitter.com" && part.length > 0) || ""
+  );
 };
 
 export const getXScore = async (acc: any) => {
