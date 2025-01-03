@@ -28,7 +28,6 @@ const fetch_from_pumpfun = async ({
 
     return data;
   } catch (error: any) {
-    console.error("Error fetching from pump.fun:", error.message);
     logger.critical("Error fetching from pump.fun: " + error);
     return null;
   }
@@ -54,7 +53,6 @@ export const fetch_all_data_from_pumpfun = async () => {
         offset: i,
       });
       const result_data = await updateDataProcess(result);
-      // console.log("result:", result);
       if (result_data) {
         data[time].push(...result_data);
       }
